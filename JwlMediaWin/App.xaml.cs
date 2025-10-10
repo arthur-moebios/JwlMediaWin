@@ -2,10 +2,12 @@
 {
     using System.IO;
     using System.Threading;
+    using System.Threading.Tasks; 
     using System.Windows;
     using GalaSoft.MvvmLight.Messaging;
     using Hardcodet.Wpf.TaskbarNotification;
     using PubSubMessages;
+    using JwlMediaWin.Services;
     using Serilog;
     using ViewModel;
 
@@ -38,6 +40,18 @@
                     Messenger.Default.Register<ShowBalloonTipMessage>(this, OnShowBalloonTipMessage);
                 }
             }
+            _ = Task.Run(async () =>
+            {
+                try
+                {
+                    var svc = new UpdateService();
+                    await svc.CheckAndOfferAsync().ConfigureAwait(false);
+                }
+                catch
+                {
+                    // optional: log here if you have a static logger ready at this time
+                }
+            });
         }
 
         protected override void OnExit(ExitEventArgs e)

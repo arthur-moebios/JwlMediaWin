@@ -29,6 +29,7 @@
                    TextWrapping="Wrap"
                    FontSize="10"
                    HorizontalAlignment="Left" />
+        <Separator />
     </ContextMenu>
 
     <!-- the application's NotifyIcon - started from App.xaml.cs. Declares its own view model. -->
