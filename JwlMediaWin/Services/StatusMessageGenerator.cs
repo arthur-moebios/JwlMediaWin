@@ -1,7 +1,7 @@
 ﻿namespace JwlMediaWin.Services
 {
     using JwlMediaWin.Core.Models;
-    
+
     internal sealed class StatusMessageGenerator
     {
         private string _previousMessage;
@@ -43,11 +43,28 @@
                 result = "Could not fix - core window focused.";
             }
 
-            if (result.Equals(_previousMessage))
+            if (results.MediaContentChanged)
+            {
+                string kind = string.IsNullOrEmpty(results.MediaContentType)
+                    ? "unknown"
+                    : results.MediaContentType.ToLowerInvariant();
+
+                if (results.MediaHasContent)
+                {
+                    // “entrou” conteúdo -> imagem ou vídeo
+                    return $"{appName}: exibindo {kind}.";
+                }
+                else
+                {
+                    // “saiu” conteúdo
+                    return $"{appName}: no media.";
+                }
+            }
+            else if (result.Equals(_previousMessage))
             {
                 return null;
             }
-            
+
             _previousMessage = result;
             return result;
         }

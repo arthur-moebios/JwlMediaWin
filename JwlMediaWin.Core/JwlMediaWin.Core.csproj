@@ -42,6 +42,11 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Drawing.Common, Version=10.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Drawing.Common.10.0.0-rc.1.25451.107\lib\net462\System.Drawing.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Drawing.Design" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -62,6 +67,7 @@
     </Compile>
     <Compile Include="Fixer.cs" />
     <Compile Include="FixerRunner.cs" />
+    <Compile Include="FrameMotionDetector.cs" />
     <Compile Include="Models\FindWindowResult.cs" />
     <Compile Include="Models\FixerStatus.cs" />
     <Compile Include="Models\FixerStatusEventArgs.cs" />

@@ -1,4 +1,4 @@
-﻿﻿namespace JwlMediaWin
+﻿namespace JwlMediaWin
 {
     using System;
     using System.Linq;
@@ -14,7 +14,9 @@
     /// </summary>
     internal static class VersionDetection
     {
-        private const string ApiLatestRelease = "https://api.github.com/repos/AntonyCorbett/JwlMediaWin/releases/latest";
+        private const string ApiLatestRelease =
+            "https://api.github.com/repos/AntonyCorbett/JwlMediaWin/releases/latest";
+
         public static string LatestReleaseHtml => "https://github.com/AntonyCorbett/JwlMediaWin/releases/latest";
 
         public static Version GetCurrentVersion()
@@ -31,18 +33,22 @@
         public sealed class LatestInfo
         {
             public Version Version { get; set; }
-            public Uri AssetUri { get; set; }   // direct link to installer (preferred)
+            public Uri AssetUri { get; set; } // direct link to installer (preferred)
             public string AssetName { get; set; }
-            public Uri HtmlPage { get; set; }   // releases/latest (fallback)
+            public Uri HtmlPage { get; set; } // releases/latest (fallback)
         }
 
         public static async Task<LatestInfo> GetLatestAsync(CancellationToken ct = default(CancellationToken))
         {
             using (var http = new HttpClient())
             {
+                // Reasonable timeout for update checks
+                http.Timeout = TimeSpan.FromSeconds(10);
+
                 // GitHub API requires a User-Agent
                 http.DefaultRequestHeaders.UserAgent.ParseAdd("JwlMediaWin-Updater");
                 http.DefaultRequestHeaders.Accept.ParseAdd("application/vnd.github+json");
+                http.DefaultRequestHeaders.Add("X-GitHub-Api-Version", "2025-08-02");
 
                 var resp = await http.GetAsync(ApiLatestRelease, ct).ConfigureAwait(false);
                 resp.EnsureSuccessStatusCode();
@@ -61,9 +67,7 @@
                 }
 
                 // Choose an installer-like asset if available
-                var assets = (JArray)jo["assets"];
-                if (assets == null)
-                    assets = new JArray();
+                var assets = jo["assets"] as JArray ?? new JArray();
 
                 JToken chosen = null;
                 string[] prefs = { ".exe", ".msi" };
@@ -101,10 +105,20 @@
         /// </summary>
         private static string NormalizeToSystemVersion(string v)
         {
-            // Strip pre-release suffixes like "-beta", "-rc.1", etc.
-            int idx = v.IndexOf('-');   // ✅ compatível com .NET Framework 4.x / C# 7.3
-            if (idx >= 0)
-                v = v.Substring(0, idx);
+            // Remove pre-release or build metadata suffixes like "-beta", "+build.5"
+            int dashIdx = v.IndexOf('-');
+            int plusIdx = v.IndexOf('+');
+            int cutIdx = -1;
+
+            if (dashIdx >= 0 && plusIdx >= 0)
+                cutIdx = Math.Min(dashIdx, plusIdx);
+            else if (dashIdx >= 0)
+                cutIdx = dashIdx;
+            else if (plusIdx >= 0)
+                cutIdx = plusIdx;
+
+            if (cutIdx >= 0)
+                v = v.Substring(0, cutIdx);
 
             var parts = v.Split('.');
             if (parts.Length == 2)

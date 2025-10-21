@@ -41,5 +41,14 @@
         ///   <c>true</c> if there was an unknown error unknown; otherwise, <c>false</c>.
         /// </value>
         public bool ErrorUnknown { get; set; }
+        
+        /// <summary>True se Core/Media window exibe algum conteúdo (imagem ou vídeo).</summary>
+        public bool MediaHasContent { get; set; }
+
+        /// <summary>"Video", "Image", "None" ou "Unknown".</summary>
+        public string MediaContentType { get; set; }
+
+        /// <summary>True se o estado de conteúdo mudou desde o ciclo anterior.</summary>
+        public bool MediaContentChanged { get; set; }
     }
 }

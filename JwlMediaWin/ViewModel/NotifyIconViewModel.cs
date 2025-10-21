@@ -30,7 +30,7 @@
 
             ExitAppCommand = new RelayCommand(Application.Current.Shutdown);
             ShowHelpPageCommand = new RelayCommand(ShowHelpPage);
-            
+
             ResetFixer();
 
             _fixerRunner.StatusEvent += HandleFixerRunnerStatusEvent;
@@ -65,7 +65,7 @@
                     {
                         IsFixEnabledJwLibSign = false;
                     }
-                    
+
                     ResetFixer();
                 }
             }
@@ -90,15 +90,15 @@
                     {
                         IsFixEnabledJwLib = false;
                     }
-                    
+
                     ResetFixer();
                 }
             }
         }
 
-        public string VersionStringAndCopyright => "version " + 
-                                       VersionDetection.GetCurrentVersionString() +
-                                       ". JW Library is a trademark of Watch Tower Bible and Tract Society of Pennsylvania";
+        public string VersionStringAndCopyright => "version " +
+                                                   VersionDetection.GetCurrentVersionString() +
+                                                   ". JW Library is a trademark of Watch Tower Bible and Tract Society of Pennsylvania";
 
         // ReSharper disable once UnusedMember.Global
         public bool IsKeepOnTopEnabled
@@ -114,7 +114,7 @@
                     Log.Logger.Information(value
                         ? "Enabled keep on top"
                         : "Disabled on top");
-                    
+
                     ResetFixer();
                 }
             }
@@ -173,7 +173,8 @@
 
         private void HandleFixerRunnerStatusEvent(object sender, FixerStatusEventArgs e)
         {
-            _isFixed = e.Status.IsFixed || (e.Status.FindWindowResult != null && e.Status.FindWindowResult.IsAlreadyFixed);
+            _isFixed = e.Status.IsFixed ||
+                       (e.Status.FindWindowResult != null && e.Status.FindWindowResult.IsAlreadyFixed);
 
             var appName = GetAppName(_fixerRunner.AppType);
             var msg = _statusMessageGenerator.Generate(e.Status, appName);
@@ -185,6 +186,11 @@
                 if (e.Status.IsFixed)
                 {
                     ShowBalloonMsg(BalloonIcon.Info, msg);
+                }
+
+                if (e.Status.MediaContentChanged)
+                {
+                    ShowBalloonMsg(Hardcodet.Wpf.TaskbarNotification.BalloonIcon.Info, msg);
                 }
             }
         }

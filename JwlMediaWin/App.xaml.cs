@@ -1,4 +1,6 @@
-﻿namespace JwlMediaWin
+﻿using System;
+
+namespace JwlMediaWin
 {
     using System.IO;
     using System.Threading;
@@ -7,7 +9,7 @@
     using GalaSoft.MvvmLight.Messaging;
     using Hardcodet.Wpf.TaskbarNotification;
     using PubSubMessages;
-    using JwlMediaWin.Services;
+    using Services;
     using Serilog;
     using ViewModel;
 
@@ -44,14 +46,24 @@
             {
                 try
                 {
+                    Log.Logger.Information("Starting update check...");
+
                     var svc = new UpdateService();
                     await svc.CheckAndOfferAsync().ConfigureAwait(false);
+
+                    Log.Logger.Information("Update check completed successfully.");
                 }
-                catch
+                catch (Exception ex)
                 {
-                    // optional: log here if you have a static logger ready at this time
+                    // Loga a exceção com detalhes
+                    Log.Logger.Error(ex, "Error during update check");
+                }
+                finally
+                {
+                    Log.Logger.Information("==== Exit ====");
                 }
             });
+
         }
 
         protected override void OnExit(ExitEventArgs e)
