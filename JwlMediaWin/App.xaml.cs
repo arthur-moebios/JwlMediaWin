@@ -4,7 +4,7 @@ namespace JwlMediaWin
 {
     using System.IO;
     using System.Threading;
-    using System.Threading.Tasks; 
+    using System.Threading.Tasks;
     using System.Windows;
     using GalaSoft.MvvmLight.Messaging;
     using Hardcodet.Wpf.TaskbarNotification;
@@ -21,7 +21,7 @@ namespace JwlMediaWin
         private readonly string _appString = "JwlMediaWindowFixSoundBox";
         private Mutex _appMutex;
         private TaskbarIcon _notifyIcon;
-        
+
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
@@ -42,6 +42,7 @@ namespace JwlMediaWin
                     Messenger.Default.Register<ShowBalloonTipMessage>(this, OnShowBalloonTipMessage);
                 }
             }
+
             _ = Task.Run(async () =>
             {
                 try
@@ -58,12 +59,7 @@ namespace JwlMediaWin
                     // Loga a exceção com detalhes
                     Log.Logger.Error(ex, "Error during update check");
                 }
-                finally
-                {
-                    Log.Logger.Information("==== Exit ====");
-                }
             });
-
         }
 
         protected override void OnExit(ExitEventArgs e)
